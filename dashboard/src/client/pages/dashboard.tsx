@@ -9,6 +9,7 @@ import { TradeChart } from "@/components/dashboard/trade-chart";
 import { CityChart } from "@/components/dashboard/city-chart";
 import { SearchFilterBar } from "@/components/dashboard/search-filter-bar";
 import { SubcontractorTable } from "@/components/dashboard/subcontractor-table";
+import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 
 export function DashboardPage() {
@@ -36,13 +37,10 @@ export function DashboardPage() {
           </h1>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">{user?.name}</span>
-            <button
-              onClick={() => signOut()}
-              className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
+            <Button variant="ghost" size="sm" onClick={() => signOut()}>
               <LogOut className="h-3.5 w-3.5" />
               Sign out
-            </button>
+            </Button>
           </div>
         </div>
       </header>

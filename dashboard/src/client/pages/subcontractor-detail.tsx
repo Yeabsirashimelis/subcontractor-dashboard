@@ -1,14 +1,9 @@
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Globe, Phone, Mail, MapPin, Building2 } from "lucide-react";
 import { useSubcontractor } from "@/hooks/use-subcontractors";
-
-function Badge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
-      {children}
-    </span>
-  );
-}
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function InfoRow({
   icon: Icon,
@@ -52,11 +47,11 @@ export function SubcontractorDetailPage() {
   if (isPending) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-8">
-        <div className="h-6 w-24 animate-pulse rounded bg-muted" />
+        <Skeleton className="h-6 w-24" />
         <div className="mt-6 space-y-4">
-          <div className="h-8 w-64 animate-pulse rounded bg-muted" />
-          <div className="h-4 w-full animate-pulse rounded bg-muted" />
-          <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-3/4" />
         </div>
       </div>
     );
@@ -130,10 +125,12 @@ export function SubcontractorDetailPage() {
           )}
         </div>
 
-        <div className="mt-8 grid gap-8 sm:grid-cols-2">
-          <section className="rounded-lg border bg-card p-4">
-            <h2 className="mb-3 text-sm font-semibold">Contact</h2>
-            <div className="divide-y">
+        <div className="mt-8 grid gap-6 sm:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Contact</CardTitle>
+            </CardHeader>
+            <CardContent className="divide-y">
               <InfoRow icon={MapPin} label="Address" value={address} />
               <InfoRow icon={Phone} label="Phone" value={sub.phone} />
               <InfoRow icon={Mail} label="Email" value={sub.email} />
@@ -143,12 +140,14 @@ export function SubcontractorDetailPage() {
                 value={sub.website}
                 href={websiteUrl}
               />
-            </div>
-          </section>
+            </CardContent>
+          </Card>
 
-          <section className="rounded-lg border bg-card p-4">
-            <h2 className="mb-3 text-sm font-semibold">Company Info</h2>
-            <div className="space-y-3 text-sm">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Company Info</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
               {sub.employeeCount && (
                 <div>
                   <p className="text-xs text-muted-foreground">Employees</p>
@@ -173,8 +172,8 @@ export function SubcontractorDetailPage() {
                   </p>
                 </div>
               )}
-            </div>
-          </section>
+            </CardContent>
+          </Card>
         </div>
 
         {(sub.trades ?? []).length > 0 && (
@@ -182,7 +181,7 @@ export function SubcontractorDetailPage() {
             <h2 className="mb-3 text-sm font-semibold">Trades</h2>
             <div className="flex flex-wrap gap-2">
               {sub.trades.map((t) => (
-                <Badge key={t}>{t}</Badge>
+                <Badge key={t} variant="secondary">{t}</Badge>
               ))}
             </div>
           </section>
@@ -193,7 +192,7 @@ export function SubcontractorDetailPage() {
             <h2 className="mb-3 text-sm font-semibold">Market Sectors</h2>
             <div className="flex flex-wrap gap-2">
               {sub.marketSectors.map((s) => (
-                <Badge key={s}>{s}</Badge>
+                <Badge key={s} variant="secondary">{s}</Badge>
               ))}
             </div>
           </section>
@@ -206,7 +205,7 @@ export function SubcontractorDetailPage() {
             </h2>
             <div className="flex flex-wrap gap-2">
               {sub.businessClassifications.map((c) => (
-                <Badge key={c}>{c}</Badge>
+                <Badge key={c} variant="outline">{c}</Badge>
               ))}
             </div>
           </section>
@@ -217,45 +216,49 @@ export function SubcontractorDetailPage() {
             <h2 className="mb-3 text-sm font-semibold">Service Areas</h2>
             <div className="flex flex-wrap gap-2">
               {sub.serviceAreas.map((a) => (
-                <Badge key={a}>{a}</Badge>
+                <Badge key={a} variant="outline">{a}</Badge>
               ))}
             </div>
           </section>
         )}
 
         {(sub.samUei || sub.federalAwardsTotal != null || sub.nycBidsCount != null) && (
-          <section className="mt-8 rounded-lg border bg-card p-4">
-            <h2 className="mb-3 text-sm font-semibold">
-              Government & Enrichment Data
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-3 text-sm">
-              {sub.samUei && (
-                <div>
-                  <p className="text-xs text-muted-foreground">SAM.gov UEI</p>
-                  <p className="font-mono">{sub.samUei}</p>
-                  {sub.samStatus && (
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      Status: {sub.samStatus}
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle className="text-sm">
+                Government & Enrichment Data
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 sm:grid-cols-3 text-sm">
+                {sub.samUei && (
+                  <div>
+                    <p className="text-xs text-muted-foreground">SAM.gov UEI</p>
+                    <p className="font-mono">{sub.samUei}</p>
+                    {sub.samStatus && (
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        Status: {sub.samStatus}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {sub.federalAwardsTotal != null && (
+                  <div>
+                    <p className="text-xs text-muted-foreground">
+                      Federal Awards
                     </p>
-                  )}
-                </div>
-              )}
-              {sub.federalAwardsTotal != null && (
-                <div>
-                  <p className="text-xs text-muted-foreground">
-                    Federal Awards
-                  </p>
-                  <p>${sub.federalAwardsTotal.toLocaleString()}</p>
-                </div>
-              )}
-              {sub.nycBidsCount != null && (
-                <div>
-                  <p className="text-xs text-muted-foreground">NYC Bids</p>
-                  <p>{sub.nycBidsCount}</p>
-                </div>
-              )}
-            </div>
-          </section>
+                    <p>${sub.federalAwardsTotal.toLocaleString()}</p>
+                  </div>
+                )}
+                {sub.nycBidsCount != null && (
+                  <div>
+                    <p className="text-xs text-muted-foreground">NYC Bids</p>
+                    <p>{sub.nycBidsCount}</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

@@ -3,6 +3,11 @@ import { Search, X, SlidersHorizontal } from "lucide-react";
 import { useFilterOptions } from "@/hooks/use-stats";
 import { useDebounce } from "@/hooks/use-debounce";
 import type { SubcontractorFilters } from "@/hooks/use-subcontractors";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 interface Props {
   filters: SubcontractorFilters;
@@ -22,21 +27,15 @@ function FilterSelect({
 }) {
   return (
     <div className="space-y-1">
-      <label className="text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="flex h-9 w-full min-w-[140px] rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
+      <Label className="text-xs text-muted-foreground">{label}</Label>
+      <Select value={value} onChange={(e) => onChange(e.target.value)}>
         <option value="">All {label}</option>
         {options.map((opt) => (
           <option key={opt} value={opt}>
             {opt}
           </option>
         ))}
-      </select>
+      </Select>
     </div>
   );
 }
@@ -75,12 +74,12 @@ export function SearchFilterBar({ filters, onFilterChange }: Props) {
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
+          <Input
             type="text"
             placeholder="Search by name, city, or trade..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background pl-9 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="pl-9 pr-9"
           />
           {searchInput && (
             <button
@@ -93,13 +92,10 @@ export function SearchFilterBar({ filters, onFilterChange }: Props) {
         </div>
 
         {hasActiveFilters && (
-          <button
-            onClick={clearAll}
-            className="inline-flex h-10 items-center gap-1.5 rounded-md border border-input px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
+          <Button variant="outline" size="sm" onClick={clearAll}>
             <X className="h-3.5 w-3.5" />
             Clear all
-          </button>
+          </Button>
         )}
       </div>
 
@@ -108,9 +104,9 @@ export function SearchFilterBar({ filters, onFilterChange }: Props) {
           <SlidersHorizontal className="h-3.5 w-3.5" />
           Filters
           {activeFilterCount > 0 && (
-            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">
+            <Badge variant="default" className="h-5 w-5 justify-center rounded-full p-0 text-[10px]">
               {activeFilterCount}
-            </span>
+            </Badge>
           )}
         </div>
 
