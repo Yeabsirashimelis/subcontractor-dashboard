@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def scrape():
-    logger.info("Starting Procore scraper for New York state")
+    logger.info("Starting Procore scraper for California state")
 
     companies = scrape_all()
     logger.info(f"Scraped {len(companies)} unique companies")
@@ -31,7 +31,7 @@ def scrape():
 def enrich():
     from .enrichment.sam_gov import enrich_all as enrich_sam
     from .enrichment.usaspending import enrich_all as enrich_awards
-    from .enrichment.nyc_bids import enrich_all as enrich_bids
+    from .enrichment.ca_contracts import enrich_all as enrich_contracts
 
     logger.info("Starting enrichment pipeline")
 
@@ -41,8 +41,8 @@ def enrich():
     logger.info("--- USAspending ---")
     enrich_awards()
 
-    logger.info("--- NYC Open Data Bids ---")
-    enrich_bids()
+    logger.info("--- CA Govt Contracts ---")
+    enrich_contracts()
 
     logger.info("Enrichment pipeline complete")
 

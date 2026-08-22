@@ -18,14 +18,15 @@ from ..db import get_connection
 
 logger = logging.getLogger(__name__)
 
-SAM_API_BASE = "https://api.sam.gov/entity-information/v2/entities"
+SAM_API_BASE = "https://sam.gov/api/prod/entity-information/v3/entities"
 SAM_API_KEY = os.getenv("SAM_API_KEY", "")
 
 
 def search_entity(company_name: str) -> dict | None:
     params = {
         "legalBusinessName": company_name,
-        "registrationStatus": "A",
+        "samRegistered": "Yes",
+        "includeSections": "entityRegistration",
         "api_key": SAM_API_KEY,
     }
 

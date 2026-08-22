@@ -9,7 +9,7 @@ DATABASE_URL = os.getenv(
 )
 
 PROCORE_BASE_URL = "https://network.procore.com"
-TARGET_STATE = "ny"
+TARGET_STATE = "ca"
 MAX_PAGES = 8
 PAGE_SIZE = 40
 REQUEST_DELAY = 2.0

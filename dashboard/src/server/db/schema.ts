@@ -45,7 +45,7 @@ export const subcontractors = pgTable(
     samUei: varchar("sam_uei", { length: 20 }),
     samStatus: varchar("sam_status", { length: 50 }),
     federalAwardsTotal: integer("federal_awards_total"),
-    nycBidsCount: integer("nyc_bids_count"),
+    govtContractsCount: integer("govt_contracts_count"),
 
     sourceUrl: varchar("source_url", { length: 500 }),
     scrapedAt: timestamp("scraped_at").defaultNow(),
