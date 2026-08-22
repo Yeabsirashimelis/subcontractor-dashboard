@@ -4,9 +4,11 @@ import { RegisterPage } from "./pages/register";
 import { DashboardPage } from "./pages/dashboard";
 import { SubcontractorDetailPage } from "./pages/subcontractor-detail";
 import { AuthGuard } from "./components/layout/auth-guard";
+import { ErrorBoundary } from "./components/layout/error-boundary";
 
 export function App() {
   return (
+    <ErrorBoundary>
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
@@ -30,5 +32,6 @@ export function App() {
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
+    </ErrorBoundary>
   );
 }
