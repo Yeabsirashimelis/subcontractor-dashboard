@@ -21,8 +21,12 @@ NYC_BIDS_API = "https://data.cityofnewyork.us/resource/tf3b-tk9r.json"
 
 
 def search_bids(company_name: str) -> int:
+    safe_name = company_name.upper().replace("'", "''")
     params = {
-        "$where": f"upper(vendor_name) LIKE '%{company_name.upper().replace("'", "''")}%'",
+        "$where": (
+            f"upper(short_title) LIKE '%{safe_name}%' OR "
+            f"upper(additional_description_1) LIKE '%{safe_name}%'"
+        ),
         "$select": "count(*) as bid_count",
     }
 

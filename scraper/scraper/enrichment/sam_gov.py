@@ -8,34 +8,36 @@ API docs: https://open.gsa.gov/api/entity-api/
 """
 
 import logging
+import os
 import time
 
 import requests
 
-from ..config import DATABASE_URL, REQUEST_DELAY
+from ..config import REQUEST_DELAY
 from ..db import get_connection
 
 logger = logging.getLogger(__name__)
 
-SAM_API_BASE = "https://api.sam.gov/entity-information/v3/entities"
-SAM_API_KEY = None  # Public tier — rate-limited but functional without key
+SAM_API_BASE = "https://api.sam.gov/entity-information/v2/entities"
+SAM_API_KEY = os.getenv("SAM_API_KEY", "")
 
 
 def search_entity(company_name: str) -> dict | None:
     params = {
         "legalBusinessName": company_name,
         "registrationStatus": "A",
-        "purposeOfRegistrationCode": "Z2~Z5",
-        "api_key": SAM_API_KEY or "",
+        "api_key": SAM_API_KEY,
     }
 
     try:
         resp = requests.get(SAM_API_BASE, params=params, timeout=15)
-        if resp.status_code == 429:
-            logger.warning("SAM.gov rate limited, backing off 30s")
+        if resp.status_code in (429, 403):
+            logger.warning("SAM.gov rate limited or key issue, backing off 30s")
             time.sleep(30)
             return None
-        resp.raise_for_status()
+        if resp.status_code != 200:
+            logger.debug(f"SAM.gov returned {resp.status_code} for '{company_name}'")
+            return None
 
         data = resp.json()
         total = data.get("totalRecords", 0)
@@ -56,6 +58,10 @@ def search_entity(company_name: str) -> dict | None:
 
 
 def enrich_all():
+    if not SAM_API_KEY:
+        logger.warning("SAM_API_KEY not set, skipping SAM.gov enrichment")
+        return 0
+
     conn = get_connection()
     try:
         with conn.cursor() as cur:
