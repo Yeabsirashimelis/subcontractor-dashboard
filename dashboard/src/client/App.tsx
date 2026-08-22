@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LoginPage } from "./pages/login";
 import { RegisterPage } from "./pages/register";
 import { DashboardPage } from "./pages/dashboard";
+import { SubcontractorDetailPage } from "./pages/subcontractor-detail";
 import { AuthGuard } from "./components/layout/auth-guard";
 
 export function App() {
@@ -15,6 +16,14 @@ export function App() {
           element={
             <AuthGuard>
               <DashboardPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/subcontractors/:id"
+          element={
+            <AuthGuard>
+              <SubcontractorDetailPage />
             </AuthGuard>
           }
         />

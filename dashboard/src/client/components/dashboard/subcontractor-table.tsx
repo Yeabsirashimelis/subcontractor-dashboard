@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Subcontractor, PaginatedResponse } from "@shared/types";
 
@@ -30,6 +31,7 @@ export function SubcontractorTable({
   page,
   onPageChange,
 }: Props) {
+  const navigate = useNavigate();
   const rows = data?.data ?? [];
   const meta = data?.meta;
 
@@ -62,7 +64,8 @@ export function SubcontractorTable({
               rows.map((sub) => (
                 <tr
                   key={sub.id}
-                  className="border-b transition-colors hover:bg-muted/50"
+                  onClick={() => navigate(`/subcontractors/${sub.id}`)}
+                  className="cursor-pointer border-b transition-colors hover:bg-muted/50"
                 >
                   <td className="px-4 py-3">
                     <div className="font-medium">{sub.name}</div>
