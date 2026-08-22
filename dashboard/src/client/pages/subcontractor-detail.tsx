@@ -46,10 +46,10 @@ export function SubcontractorDetailPage() {
 
   if (isPending) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-8">
+      <div className="mx-auto max-w-3xl px-3 py-6 sm:px-4 sm:py-8">
         <Skeleton className="h-6 w-24" />
         <div className="mt-6 space-y-4">
-          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-8 w-48 sm:w-64" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-3/4" />
         </div>
@@ -59,7 +59,7 @@ export function SubcontractorDetailPage() {
 
   if (!sub) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-8">
+      <div className="mx-auto max-w-3xl px-3 py-6 sm:px-4 sm:py-8">
         <Link
           to="/dashboard"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -86,7 +86,7 @@ export function SubcontractorDetailPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-3xl px-4 py-8">
+      <div className="mx-auto max-w-3xl px-3 py-6 sm:px-4 sm:py-8">
         <Link
           to="/dashboard"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -95,23 +95,25 @@ export function SubcontractorDetailPage() {
           Back to dashboard
         </Link>
 
-        <div className="mt-6">
-          <div className="flex items-start gap-4">
+        <div className="mt-4 sm:mt-6">
+          <div className="flex items-start gap-3 sm:gap-4">
             {sub.logoUrl ? (
               <img
                 src={sub.logoUrl}
                 alt=""
-                className="h-14 w-14 shrink-0 rounded-lg border object-contain"
+                className="h-12 w-12 shrink-0 rounded-lg border object-contain sm:h-14 sm:w-14"
               />
             ) : (
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border bg-muted">
-                <Building2 className="h-6 w-6 text-muted-foreground" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border bg-muted sm:h-14 sm:w-14">
+                <Building2 className="h-5 w-5 text-muted-foreground sm:h-6 sm:w-6" />
               </div>
             )}
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight">{sub.name}</h1>
+            <div className="min-w-0">
+              <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+                {sub.name}
+              </h1>
               {sub.companyType && (
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-0.5 text-sm text-muted-foreground">
                   {sub.companyType}
                 </p>
               )}
@@ -119,13 +121,13 @@ export function SubcontractorDetailPage() {
           </div>
 
           {sub.description && (
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4">
               {sub.description}
             </p>
           )}
         </div>
 
-        <div className="mt-8 grid gap-6 sm:grid-cols-2">
+        <div className="mt-6 grid gap-4 sm:mt-8 sm:gap-6 sm:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle className="text-sm">Contact</CardTitle>
@@ -177,7 +179,7 @@ export function SubcontractorDetailPage() {
         </div>
 
         {(sub.trades ?? []).length > 0 && (
-          <section className="mt-8">
+          <section className="mt-6 sm:mt-8">
             <h2 className="mb-3 text-sm font-semibold">Trades</h2>
             <div className="flex flex-wrap gap-2">
               {sub.trades.map((t) => (
@@ -223,14 +225,14 @@ export function SubcontractorDetailPage() {
         )}
 
         {(sub.samUei || sub.federalAwardsTotal != null || sub.nycBidsCount != null) && (
-          <Card className="mt-8">
+          <Card className="mt-6 sm:mt-8">
             <CardHeader>
               <CardTitle className="text-sm">
                 Government & Enrichment Data
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 sm:grid-cols-3 text-sm">
+              <div className="grid gap-4 grid-cols-1 text-sm sm:grid-cols-3">
                 {sub.samUei && (
                   <div>
                     <p className="text-xs text-muted-foreground">SAM.gov UEI</p>

@@ -4,6 +4,7 @@ import { db } from "../db";
 
 const trustedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5174",
   "http://localhost:3000",
   process.env.BETTER_AUTH_URL,
 ].filter(Boolean) as string[];

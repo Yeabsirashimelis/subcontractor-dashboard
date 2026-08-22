@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, X, SlidersHorizontal } from "lucide-react";
+import { Search, X, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { useFilterOptions } from "@/hooks/use-stats";
 import { useDebounce } from "@/hooks/use-debounce";
 import type { SubcontractorFilters } from "@/hooks/use-subcontractors";
@@ -45,6 +45,7 @@ export function SearchFilterBar({ filters, onFilterChange }: Props) {
   const options = data?.data;
 
   const [searchInput, setSearchInput] = useState(filters.search ?? "");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const debouncedSearch = useDebounce(searchInput, 300);
 
   useEffect(() => {
@@ -71,7 +72,7 @@ export function SearchFilterBar({ filters, onFilterChange }: Props) {
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -93,15 +94,31 @@ export function SearchFilterBar({ filters, onFilterChange }: Props) {
           )}
         </div>
 
+        <Button
+          variant="outline"
+          size="sm"
+          className="shrink-0 sm:hidden"
+          onClick={() => setFiltersOpen(!filtersOpen)}
+        >
+          <SlidersHorizontal className="h-3.5 w-3.5" />
+          {activeFilterCount > 0 && (
+            <Badge variant="default" className="ml-1 h-5 w-5 justify-center rounded-full p-0 text-[10px]">
+              {activeFilterCount}
+            </Badge>
+          )}
+          <ChevronDown className={`ml-1 h-3 w-3 transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
+        </Button>
+
         {hasActiveFilters && (
-          <Button variant="outline" size="sm" onClick={clearAll}>
+          <Button variant="outline" size="sm" onClick={clearAll} className="shrink-0">
             <X className="h-3.5 w-3.5" />
-            Clear all
+            <span className="hidden sm:inline">Clear all</span>
           </Button>
         )}
       </div>
 
-      <div className="flex flex-wrap items-end gap-3">
+      {/* Desktop filters - always visible */}
+      <div className="hidden sm:flex sm:flex-wrap sm:items-end sm:gap-3">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <SlidersHorizontal className="h-3.5 w-3.5" />
           Filters
@@ -133,6 +150,32 @@ export function SearchFilterBar({ filters, onFilterChange }: Props) {
           }
         />
       </div>
+
+      {/* Mobile filters - collapsible */}
+      {filtersOpen && (
+        <div className="grid grid-cols-1 gap-3 rounded-lg border bg-muted/30 p-3 sm:hidden">
+          <FilterSelect
+            label="Trade"
+            value={filters.trade ?? ""}
+            options={options?.trades ?? []}
+            onChange={(trade) => onFilterChange({ trade, page: 1 })}
+          />
+          <FilterSelect
+            label="City"
+            value={filters.city ?? ""}
+            options={options?.cities ?? []}
+            onChange={(city) => onFilterChange({ city, page: 1 })}
+          />
+          <FilterSelect
+            label="Company Type"
+            value={filters.companyType ?? ""}
+            options={options?.companyTypes ?? []}
+            onChange={(companyType) =>
+              onFilterChange({ companyType, page: 1 })
+            }
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -15,20 +15,22 @@ export function StatsCards() {
   const stats = data?.data;
 
   return (
-    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       {cards.map(({ label, key, icon: Icon }) => (
         <Card key={key}>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="rounded-md bg-primary/10 p-2">
-                <Icon className="h-5 w-5 text-primary" />
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="rounded-md bg-primary/10 p-1.5 sm:p-2">
+                <Icon className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">{label}</p>
+              <div className="min-w-0">
+                <p className="truncate text-xs text-muted-foreground sm:text-sm">
+                  {label}
+                </p>
                 {isPending ? (
-                  <Skeleton className="mt-1 h-7 w-16" />
+                  <Skeleton className="mt-1 h-6 w-12 sm:h-7 sm:w-16" />
                 ) : (
-                  <p className="text-2xl font-bold">
+                  <p className="text-xl font-bold sm:text-2xl">
                     {stats?.[key]?.toLocaleString() ?? "—"}
                   </p>
                 )}

@@ -31,24 +31,26 @@ export function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
-          <h1 className="text-lg font-semibold tracking-tight">
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 px-3 sm:px-4">
+          <h1 className="truncate text-base font-semibold tracking-tight sm:text-lg">
             Subcontractor Dashboard
           </h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">{user?.name}</span>
+          <div className="flex shrink-0 items-center gap-2 sm:gap-4">
+            <span className="hidden text-sm text-muted-foreground sm:inline">
+              {user?.name}
+            </span>
             <Button variant="ghost" size="sm" onClick={() => signOut()}>
               <LogOut className="h-3.5 w-3.5" />
-              Sign out
+              <span className="hidden sm:inline">Sign out</span>
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl space-y-6 px-4 py-6">
+      <main className="mx-auto max-w-7xl space-y-4 px-3 py-4 sm:space-y-6 sm:px-4 sm:py-6">
         <StatsCards />
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
           <TradeChart />
           <CityChart />
         </div>
