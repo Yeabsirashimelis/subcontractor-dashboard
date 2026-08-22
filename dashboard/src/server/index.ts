@@ -17,7 +17,14 @@ app.use(logger());
 app.use(
   "/api/*",
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: (origin) => {
+      const allowed = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        process.env.BETTER_AUTH_URL,
+      ].filter(Boolean);
+      return allowed.includes(origin) ? origin : allowed[0];
+    },
     credentials: true,
   })
 );
