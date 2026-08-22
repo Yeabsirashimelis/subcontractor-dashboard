@@ -6,13 +6,21 @@ import type { SubcontractorFilters } from "@/hooks/use-subcontractors";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
 interface Props {
   filters: SubcontractorFilters;
   onFilterChange: (filters: Partial<SubcontractorFilters>) => void;
 }
+
+const ALL_VALUE = "__all__";
 
 function FilterSelect({
   label,
@@ -28,13 +36,21 @@ function FilterSelect({
   return (
     <div className="space-y-1">
       <Label className="text-xs text-muted-foreground">{label}</Label>
-      <Select value={value} onChange={(e) => onChange(e.target.value)}>
-        <option value="">All {label}</option>
-        {options.map((opt) => (
-          <option key={opt} value={opt}>
-            {opt}
-          </option>
-        ))}
+      <Select
+        value={value || ALL_VALUE}
+        onValueChange={(v) => onChange(v === ALL_VALUE ? "" : v)}
+      >
+        <SelectTrigger className="min-w-[140px]">
+          <SelectValue placeholder={`All ${label}`} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={ALL_VALUE}>All {label}</SelectItem>
+          {options.map((opt) => (
+            <SelectItem key={opt} value={opt}>
+              {opt}
+            </SelectItem>
+          ))}
+        </SelectContent>
       </Select>
     </div>
   );
