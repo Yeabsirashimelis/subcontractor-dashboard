@@ -34,19 +34,36 @@ def extract_next_data(html: str) -> dict:
     return json.loads(match.group(1))
 
 
+def _extract_street(full_address: str | None, city: str | None, state: str | None, zip_code: str | None) -> str | None:
+    if not full_address:
+        return None
+    street = full_address
+    if city:
+        suffix = f"{city}, {state} {zip_code}".strip()
+        if street.endswith(suffix):
+            street = street[: -len(suffix)].strip()
+        elif street.endswith(city):
+            street = street[: -len(city)].strip()
+    return street.rstrip(", ") or None
+
+
 def parse_company(raw: dict) -> Subcontractor:
     primary = raw.get("primaryAddress") or {}
     display = primary.get("display") or {}
     services = raw.get("providedServices") or []
     coverage = raw.get("coverageAreas") or []
 
+    city = primary.get("city")
+    state = primary.get("province")
+    zip_code = display.get("postalCode") or primary.get("postalCode1")
+
     return Subcontractor(
         procore_slug=raw["primarySlug"],
         name=raw["name"],
-        address=display.get("address"),
-        city=primary.get("city"),
-        state=primary.get("province"),
-        zip_code=display.get("postalCode") or primary.get("postalCode1"),
+        address=_extract_street(display.get("address"), city, state, zip_code),
+        city=city,
+        state=state,
+        zip_code=zip_code,
         phone=raw.get("phone"),
         website=raw.get("website"),
         company_type=", ".join(raw.get("businessTypes") or []) or None,

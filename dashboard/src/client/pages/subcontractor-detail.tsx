@@ -87,9 +87,9 @@ export function SubcontractorDetailPage() {
     );
   }
 
-  const address = sub.address
-    ? sub.address
-    : [sub.city, sub.state, sub.zipCode].filter(Boolean).join(", ");
+  const address = [sub.address, sub.city, sub.state, sub.zipCode]
+    .filter(Boolean)
+    .join(", ");
 
   const websiteUrl = sub.website?.startsWith("http")
     ? sub.website
