@@ -10,6 +10,7 @@ import { CityChart } from "@/components/dashboard/city-chart";
 import { SearchFilterBar } from "@/components/dashboard/search-filter-bar";
 import { SubcontractorTable } from "@/components/dashboard/subcontractor-table";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { LogOut } from "lucide-react";
 
 export function DashboardPage() {
@@ -35,10 +36,11 @@ export function DashboardPage() {
           <h1 className="truncate text-base font-semibold tracking-tight sm:text-lg">
             Subcontractor Dashboard
           </h1>
-          <div className="flex shrink-0 items-center gap-2 sm:gap-4">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-3">
             <span className="hidden text-sm text-muted-foreground sm:inline">
               {user?.name}
             </span>
+            <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={() => signOut()}>
               <LogOut className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Sign out</span>

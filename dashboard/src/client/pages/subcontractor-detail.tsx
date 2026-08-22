@@ -4,6 +4,7 @@ import { useSubcontractor } from "@/hooks/use-subcontractors";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 function InfoRow({
   icon: Icon,
@@ -87,13 +88,16 @@ export function SubcontractorDetailPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-3xl px-3 py-6 sm:px-4 sm:py-8">
-        <Link
-          to="/dashboard"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to dashboard
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to dashboard
+          </Link>
+          <ThemeToggle />
+        </div>
 
         <div className="mt-4 sm:mt-6">
           <div className="flex items-start gap-3 sm:gap-4">

@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthGuard } from "./components/layout/auth-guard";
 import { ErrorBoundary } from "./components/layout/error-boundary";
+import { ThemeProvider } from "./hooks/use-theme";
 import { Skeleton } from "./components/ui/skeleton";
 
 const LoginPage = lazy(() =>
@@ -33,32 +34,34 @@ function PageLoader() {
 
 export function App() {
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route
-              path="/dashboard"
-              element={
-                <AuthGuard>
-                  <DashboardPage />
-                </AuthGuard>
-              }
-            />
-            <Route
-              path="/subcontractors/:id"
-              element={
-                <AuthGuard>
-                  <SubcontractorDetailPage />
-                </AuthGuard>
-              }
-            />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
-    </ErrorBoundary>
+    <ThemeProvider>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <AuthGuard>
+                    <DashboardPage />
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/subcontractors/:id"
+                element={
+                  <AuthGuard>
+                    <SubcontractorDetailPage />
+                  </AuthGuard>
+                }
+              />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
