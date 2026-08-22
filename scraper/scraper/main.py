@@ -13,7 +13,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def main():
+def scrape():
     logger.info("Starting Procore scraper for New York state")
 
     companies = scrape_all()
@@ -26,6 +26,40 @@ def main():
     inserted, updated = upsert_subcontractors(companies)
     logger.info(f"Database: {inserted} upserted")
     logger.info("Done!")
+
+
+def enrich():
+    from .enrichment.sam_gov import enrich_all as enrich_sam
+    from .enrichment.usaspending import enrich_all as enrich_awards
+    from .enrichment.nyc_bids import enrich_all as enrich_bids
+
+    logger.info("Starting enrichment pipeline")
+
+    logger.info("--- SAM.gov ---")
+    enrich_sam()
+
+    logger.info("--- USAspending ---")
+    enrich_awards()
+
+    logger.info("--- NYC Open Data Bids ---")
+    enrich_bids()
+
+    logger.info("Enrichment pipeline complete")
+
+
+def main():
+    command = sys.argv[1] if len(sys.argv) > 1 else "scrape"
+
+    if command == "scrape":
+        scrape()
+    elif command == "enrich":
+        enrich()
+    elif command == "all":
+        scrape()
+        enrich()
+    else:
+        print(f"Usage: python -m scraper.main [scrape|enrich|all]")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
