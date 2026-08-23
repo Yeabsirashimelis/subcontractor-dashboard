@@ -421,7 +421,7 @@ export function SubcontractorDetailPage() {
                   <div>
                     <p className="text-xs text-muted-foreground">SAM.gov UEI</p>
                     <a
-                      href={`https://sam.gov/search/?index=ent&page=1&pageSize=25&sort=-modifiedDate&sfm%5BsimpleSearch%5D%5BkeywordRadio%5D=ALL&sfm%5BsimpleSearch%5D%5BkeywordTags%5D%5B0%5D%5Bkey%5D=${sub.samUei}&sfm%5BsimpleSearch%5D%5BkeywordTags%5D%5B0%5D%5Bvalue%5D=${sub.samUei}&sfm%5Bstatus%5D%5Bis_active%5D=true`}
+                      href={`https://sam.gov/search/?index=ent&page=1&pageSize=25&sort=-modifiedDate&sfm%5BsimpleSearch%5D%5BkeywordRadio%5D=ALL&sfm%5BsimpleSearch%5D%5BkeywordTags%5D%5B0%5D%5Bkey%5D=${encodeURIComponent(sub.name)}&sfm%5BsimpleSearch%5D%5BkeywordTags%5D%5B0%5D%5Bvalue%5D=${encodeURIComponent(sub.name)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-mono text-primary hover:underline"
@@ -434,6 +434,9 @@ export function SubcontractorDetailPage() {
                         Status: {sub.samStatus}
                       </p>
                     )}
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      SAM.gov requires sign-in to view details
+                    </p>
                   </div>
                 )}
                 {sub.federalAwardsTotal != null && (
