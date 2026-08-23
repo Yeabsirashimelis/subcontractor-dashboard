@@ -8,7 +8,8 @@ A full-stack tool that scrapes subcontractor data from [Procore's public network
 
 - Scrapes **221 California subcontractors** from Procore — name, contact, trades, company info, Procore activity, and GPS coordinates
 - Enriches records from **3 public government APIs**: SAM.gov (entity registration), USAspending (federal awards), SF Open Data (CA govt contracts)
-- Dashboard with **search, filter by trade/city/type**, stats cards, trade & city charts
+- **Landing page** with animated stats (react-countup), value props, and OG meta tags for link previews
+- Dashboard with **search, filter by trade/city/type**, stats cards, and **interactive charts** (pie/bar toggle for company types, trade × city explorer, enrichment coverage)
 - **Company detail pages** with contact info, Leaflet map, Procore Activity stats, trades, market sectors, business classifications, and government data
 - Dark/light/system theme, mobile-responsive, route-level code splitting
 
@@ -16,7 +17,7 @@ A full-stack tool that scrapes subcontractor data from [Procore's public network
 
 | Layer | Tech |
 |-------|------|
-| Frontend | React 19, React Router v7, React Query v5, Recharts, react-leaflet |
+| Frontend | React 19, React Router v7, React Query v5, Recharts, react-leaflet, react-countup |
 | UI | shadcn/ui, Tailwind CSS v4 |
 | API | Hono |
 | Auth | better-auth (email/password) |
