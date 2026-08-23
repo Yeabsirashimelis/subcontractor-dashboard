@@ -414,6 +414,9 @@ export function SubcontractorDetailPage() {
               <CardTitle className="text-sm">
                 Government & Enrichment Data
               </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                Cross-referenced with federal and local government databases
+              </p>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 grid-cols-1 text-sm sm:grid-cols-3">
@@ -435,7 +438,7 @@ export function SubcontractorDetailPage() {
                       </p>
                     )}
                     <p className="mt-0.5 text-xs text-muted-foreground">
-                      SAM.gov requires sign-in to view details
+                      Federal registration ID for government contracting. Sign-in required on SAM.gov.
                     </p>
                   </div>
                 )}
@@ -456,7 +459,7 @@ export function SubcontractorDetailPage() {
                       <ExternalLink className="ml-1 inline h-3 w-3" />
                     </a>
                     <p className="mt-0.5 text-xs text-muted-foreground">
-                      From USAspending (2019–present)
+                      Total value of federal contracts awarded (2019–present, via USAspending)
                     </p>
                   </div>
                 )}
@@ -473,7 +476,7 @@ export function SubcontractorDetailPage() {
                       <ExternalLink className="ml-1 inline h-3 w-3" />
                     </a>
                     <p className="mt-0.5 text-xs text-muted-foreground">
-                      From SF Open Data
+                      City of San Francisco vendor payment vouchers (via SF Open Data)
                     </p>
                   </div>
                 )}
