@@ -5,14 +5,14 @@ from urllib.parse import urlparse
 import psycopg2
 from psycopg2.extras import execute_values
 
-from .config import DATABASE_URL
+from . import config
 from .models import Subcontractor
 
 logger = logging.getLogger(__name__)
 
 
 def get_connection():
-    return psycopg2.connect(DATABASE_URL)
+    return psycopg2.connect(config.DATABASE_URL)
 
 
 def upsert_subcontractors(companies: list[Subcontractor]) -> tuple[int, int]:

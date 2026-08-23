@@ -6,7 +6,8 @@ import logging
 import requests
 from tenacity import retry, wait_exponential, stop_after_attempt
 
-from .config import PROCORE_BASE_URL, TARGET_STATE, MAX_PAGES, REQUEST_DELAY, USER_AGENT
+from . import config
+from .config import PROCORE_BASE_URL, MAX_PAGES, REQUEST_DELAY, USER_AGENT
 from .models import Subcontractor
 
 logger = logging.getLogger(__name__)
@@ -83,7 +84,7 @@ def parse_company(raw: dict) -> Subcontractor:
 
 
 def scrape_listing_page(page: int) -> list[Subcontractor]:
-    url = f"{PROCORE_BASE_URL}/us/{TARGET_STATE}?page={page}"
+    url = f"{PROCORE_BASE_URL}/us/{config.TARGET_STATE}?page={page}"
     logger.info(f"Fetching page {page}: {url}")
 
     html = fetch_page(url)

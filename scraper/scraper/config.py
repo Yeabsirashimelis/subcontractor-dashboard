@@ -15,3 +15,8 @@ PAGE_SIZE = 40
 REQUEST_DELAY = 2.0
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+
+
+def override_db(url: str):
+    global DATABASE_URL
+    DATABASE_URL = url
