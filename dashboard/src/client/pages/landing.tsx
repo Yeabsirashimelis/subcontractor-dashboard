@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Search,
@@ -17,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { usePublicStats } from "@/hooks/use-public-stats";
+import { useCountUp } from "react-countup";
 
 const VALUE_PROPS = [
   {
@@ -132,6 +134,19 @@ function ValueProps() {
   );
 }
 
+function AnimatedStat({ end, label }: { end: number; label: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  useCountUp({ ref, end, duration: 2, separator: ",", enableScrollSpy: true, scrollSpyOnce: true });
+  return (
+    <div className="px-4 py-10 text-center">
+      <div className="text-4xl font-bold tracking-tight">
+        <span ref={ref} />
+      </div>
+      <div className="mt-2 text-sm text-muted-foreground">{label}</div>
+    </div>
+  );
+}
+
 function StatsRow() {
   const { data, isLoading } = usePublicStats();
 
@@ -145,18 +160,19 @@ function StatsRow() {
     <section className="border-y bg-muted/30">
       <div className="mx-auto grid max-w-6xl grid-cols-1 divide-y sm:grid-cols-3 sm:divide-x sm:divide-y-0">
         {stats.map((stat) => (
-          <div key={stat.label} className="px-4 py-10 text-center">
-            {isLoading ? (
+          isLoading ? (
+            <div key={stat.label} className="px-4 py-10 text-center">
               <Skeleton className="mx-auto h-10 w-24" />
-            ) : (
-              <div className="text-4xl font-bold tracking-tight">
-                {stat.value?.toLocaleString() ?? "—"}
-              </div>
-            )}
-            <div className="mt-2 text-sm text-muted-foreground">
-              {stat.label}
+              <div className="mt-2 text-sm text-muted-foreground">{stat.label}</div>
             </div>
-          </div>
+          ) : stat.value != null ? (
+            <AnimatedStat key={stat.label} end={stat.value} label={stat.label} />
+          ) : (
+            <div key={stat.label} className="px-4 py-10 text-center">
+              <div className="text-4xl font-bold tracking-tight">—</div>
+              <div className="mt-2 text-sm text-muted-foreground">{stat.label}</div>
+            </div>
+          )
         ))}
       </div>
     </section>
