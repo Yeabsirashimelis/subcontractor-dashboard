@@ -420,7 +420,15 @@ export function SubcontractorDetailPage() {
                 {sub.samUei && (
                   <div>
                     <p className="text-xs text-muted-foreground">SAM.gov UEI</p>
-                    <p className="font-mono">{sub.samUei}</p>
+                    <a
+                      href={`https://sam.gov/search/?index=ei&page=1&pageSize=25&sort=-modifiedDate&sfm%5BsimpleSearch%5D%5BueiDUNS%5D=${sub.samUei}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-primary hover:underline"
+                    >
+                      {sub.samUei}
+                      <ExternalLink className="ml-1 inline h-3 w-3" />
+                    </a>
                     {sub.samStatus && (
                       <p className="mt-0.5 text-xs text-muted-foreground">
                         Status: {sub.samStatus}
@@ -433,13 +441,29 @@ export function SubcontractorDetailPage() {
                     <p className="text-xs text-muted-foreground">
                       Federal Awards
                     </p>
-                    <p>${sub.federalAwardsTotal.toLocaleString()}</p>
+                    <a
+                      href={`https://www.usaspending.gov/keyword_search/${encodeURIComponent(sub.name)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      ${sub.federalAwardsTotal.toLocaleString()}
+                      <ExternalLink className="ml-1 inline h-3 w-3" />
+                    </a>
                   </div>
                 )}
                 {sub.govtContractsCount != null && sub.govtContractsCount > 0 && (
                   <div>
                     <p className="text-xs text-muted-foreground">Govt Contracts</p>
-                    <p>{sub.govtContractsCount}</p>
+                    <a
+                      href={`https://data.sfgov.org/City-Management-and-Ethics/Vendor-Payments-Vouchers-/n9pm-xkyq`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      {sub.govtContractsCount}
+                      <ExternalLink className="ml-1 inline h-3 w-3" />
+                    </a>
                   </div>
                 )}
               </div>
