@@ -87,13 +87,15 @@ export function CompanyTypeChart() {
                 data={chartData}
                 cx="50%"
                 cy="50%"
-                innerRadius={isMobile ? 40 : 60}
-                outerRadius={isMobile ? 80 : 100}
+                innerRadius={isMobile ? 40 : 50}
+                outerRadius={isMobile ? 80 : 85}
                 paddingAngle={2}
                 dataKey="value"
-                label={isMobile ? false : ({ name, value }) =>
-                  `${name} (${Math.round((value / total) * 100)}%)`
-                }
+                label={isMobile ? false : ({ name, value }) => {
+                  const pct = `${Math.round((value / total) * 100)}%`;
+                  const short = name.length > 16 ? `${name.slice(0, 14)}…` : name;
+                  return `${short} (${pct})`;
+                }}
                 labelLine={!isMobile}
               >
                 {chartData.map((_, i) => (

@@ -48,9 +48,9 @@ export function EnrichmentChart() {
   if (!stats) return null;
 
   const coverageData = [
-    { name: "SAM.gov Registered", value: stats.coverage.samRegistered },
+    { name: "SAM.gov", value: stats.coverage.samRegistered },
     { name: "Federal Awards", value: stats.coverage.hasFederalAwards },
-    { name: "SF Vendor Payments", value: stats.coverage.hasSfContracts },
+    { name: "SF Vendors", value: stats.coverage.hasSfContracts },
     {
       name: "No Govt Data",
       value:
@@ -92,8 +92,8 @@ export function EnrichmentChart() {
                 data={coverageData}
                 cx="50%"
                 cy="50%"
-                innerRadius={isMobile ? 40 : 60}
-                outerRadius={isMobile ? 80 : 100}
+                innerRadius={isMobile ? 40 : 50}
+                outerRadius={isMobile ? 80 : 85}
                 paddingAngle={2}
                 dataKey="value"
                 label={
