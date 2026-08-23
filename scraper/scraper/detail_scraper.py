@@ -48,8 +48,8 @@ def fetch_detail_page(slug: str) -> dict | None:
 
 
 def extract_detail_fields(page_props: dict) -> dict:
-    biz = page_props.get("business", {})
-    metrics = page_props.get("metrics", {})
+    biz = page_props.get("business") or {}
+    metrics = page_props.get("metrics") or {}
 
     phone = biz.get("phone")
     claimed = biz.get("claimed")
