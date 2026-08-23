@@ -10,6 +10,7 @@ import { requireAuth } from "./middleware/auth";
 import subcontractorRoutes from "./routes/subcontractors";
 import statsRoutes from "./routes/stats";
 import filtersRoutes from "./routes/filters";
+import publicRoutes from "./routes/public";
 
 const app = new Hono();
 
@@ -30,6 +31,8 @@ app.use(
 );
 
 app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
+
+app.route("/api/public", publicRoutes);
 
 app.use("/api/*", requireAuth);
 app.route("/api/subcontractors", subcontractorRoutes);
