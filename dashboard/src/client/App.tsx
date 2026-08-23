@@ -5,6 +5,9 @@ import { ErrorBoundary } from "./components/layout/error-boundary";
 import { ThemeProvider } from "./hooks/use-theme";
 import { Skeleton } from "./components/ui/skeleton";
 
+const LandingPage = lazy(() =>
+  import("./pages/landing").then((m) => ({ default: m.LandingPage }))
+);
 const LoginPage = lazy(() =>
   import("./pages/login").then((m) => ({ default: m.LoginPage }))
 );
@@ -39,6 +42,7 @@ export function App() {
         <BrowserRouter>
           <Suspense fallback={<PageLoader />}>
             <Routes>
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route
@@ -57,7 +61,7 @@ export function App() {
                   </AuthGuard>
                 }
               />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

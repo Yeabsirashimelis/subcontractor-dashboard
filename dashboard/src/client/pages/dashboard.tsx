@@ -52,7 +52,7 @@ export function DashboardPage() {
       <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 px-3 sm:px-4">
           <h1 className="truncate text-base font-semibold tracking-tight sm:text-lg">
-            Subcontractor Dashboard
+            Subtrak
           </h1>
           <div className="flex shrink-0 items-center gap-1 sm:gap-3">
             <span className="hidden text-sm text-muted-foreground sm:inline">

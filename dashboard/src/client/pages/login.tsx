@@ -49,7 +49,7 @@ export function LoginPage() {
       </div>
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Subcontractor Dashboard</CardTitle>
+          <CardTitle className="text-2xl">Subtrak</CardTitle>
           <CardDescription>Sign in to explore subcontractor data</CardDescription>
         </CardHeader>
 
