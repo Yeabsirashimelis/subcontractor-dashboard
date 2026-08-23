@@ -40,7 +40,7 @@ function FilterSelect({
         value={value || ALL_VALUE}
         onValueChange={(v) => onChange(v === ALL_VALUE ? "" : v)}
       >
-        <SelectTrigger className="min-w-[140px]">
+        <SelectTrigger>
           <SelectValue placeholder={`All ${label}`} />
         </SelectTrigger>
         <SelectContent>
