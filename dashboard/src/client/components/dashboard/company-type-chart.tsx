@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   PieChart,
   Pie,
@@ -13,34 +13,11 @@ import {
   CartesianGrid,
 } from "recharts";
 import { useCompanyTypeStats } from "@/hooks/use-stats";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { CHART_COLORS } from "@/lib/chart-colors";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const COLORS = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
-  "hsl(210, 60%, 55%)",
-  "hsl(340, 55%, 55%)",
-  "hsl(160, 50%, 45%)",
-];
-
-function useIsMobile(breakpoint = 640) {
-  const [isMobile, setIsMobile] = useState(
-    () => typeof window !== "undefined" && window.innerWidth < breakpoint
-  );
-  useEffect(() => {
-    const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener("change", handler);
-    setIsMobile(mq.matches);
-    return () => mq.removeEventListener("change", handler);
-  }, [breakpoint]);
-  return isMobile;
-}
 
 export function CompanyTypeChart() {
   const { data, isPending } = useCompanyTypeStats();
@@ -122,7 +99,7 @@ export function CompanyTypeChart() {
                 {chartData.map((_, i) => (
                   <Cell
                     key={i}
-                    fill={COLORS[i % COLORS.length]}
+                    fill={CHART_COLORS[i % CHART_COLORS.length]}
                   />
                 ))}
               </Pie>
@@ -160,7 +137,7 @@ export function CompanyTypeChart() {
               />
               <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                 {chartData.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                  <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                 ))}
               </Bar>
             </BarChart>
