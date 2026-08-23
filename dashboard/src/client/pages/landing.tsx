@@ -66,17 +66,23 @@ function Navbar() {
               className="stroke-primary-foreground fill-none"
             />
           </svg>
-          <span className="text-lg font-semibold tracking-tight">
+          <span className="hidden text-lg font-semibold tracking-tight sm:inline">
             Subtrak
           </span>
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <ThemeToggle />
-          <Link to="/login" className={buttonVariants({ variant: "ghost" })}>
+          <Link
+            to="/login"
+            className={buttonVariants({ variant: "ghost", size: "sm" })}
+          >
             Sign in
           </Link>
-          <Link to="/register" className={buttonVariants()}>
+          <Link
+            to="/register"
+            className={buttonVariants({ size: "sm" })}
+          >
             Get started
           </Link>
         </div>
