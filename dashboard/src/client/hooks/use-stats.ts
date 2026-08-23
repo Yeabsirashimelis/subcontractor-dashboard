@@ -48,6 +48,39 @@ export function useCompanyTypeStats() {
   });
 }
 
+export function useEnrichmentStats() {
+  return useQuery({
+    queryKey: ["stats", "enrichment"],
+    queryFn: () =>
+      fetchJson<{
+        data: {
+          samStatus: { status: string; count: number }[];
+          awardRanges: { range: string; count: number; total: number }[];
+          coverage: {
+            samRegistered: number;
+            hasFederalAwards: number;
+            hasSfContracts: number;
+            total: number;
+          };
+        };
+      }>("/api/stats/enrichment"),
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
+export function useTradesByCity(city?: string, trade?: string) {
+  const param = city ? `city=${encodeURIComponent(city)}` : trade ? `trade=${encodeURIComponent(trade)}` : "";
+  return useQuery({
+    queryKey: ["stats", "trades-by-city", city, trade],
+    queryFn: () =>
+      fetchJson<{ data: { name: string; count: number }[] }>(
+        `/api/stats/trades-by-city?${param}`
+      ),
+    enabled: !!(city || trade),
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
 export function useFilterOptions() {
   return useQuery({
     queryKey: ["filters", "options"],

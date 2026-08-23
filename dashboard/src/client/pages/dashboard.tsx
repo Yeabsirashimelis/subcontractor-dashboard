@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { lazy, Suspense, useState, useCallback } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import {
   useSubcontractors,
@@ -9,6 +9,24 @@ import { TradeChart } from "@/components/dashboard/trade-chart";
 import { CityChart } from "@/components/dashboard/city-chart";
 import { SearchFilterBar } from "@/components/dashboard/search-filter-bar";
 import { SubcontractorTable } from "@/components/dashboard/subcontractor-table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
+const CompanyTypeChart = lazy(() =>
+  import("@/components/dashboard/company-type-chart").then((m) => ({
+    default: m.CompanyTypeChart,
+  }))
+);
+const EnrichmentChart = lazy(() =>
+  import("@/components/dashboard/enrichment-chart").then((m) => ({
+    default: m.EnrichmentChart,
+  }))
+);
+const TradeCityExplorer = lazy(() =>
+  import("@/components/dashboard/trade-city-explorer").then((m) => ({
+    default: m.TradeCityExplorer,
+  }))
+);
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LogOut } from "lucide-react";
@@ -56,6 +74,22 @@ export function DashboardPage() {
           <TradeChart />
           <CityChart />
         </div>
+
+        <Suspense
+          fallback={
+            <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+              <Card><CardHeader><Skeleton className="h-5 w-40" /></CardHeader><CardContent><Skeleton className="h-[300px] w-full" /></CardContent></Card>
+              <Card><CardHeader><Skeleton className="h-5 w-40" /></CardHeader><CardContent><Skeleton className="h-[300px] w-full" /></CardContent></Card>
+            </div>
+          }
+        >
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+            <CompanyTypeChart />
+            <EnrichmentChart />
+          </div>
+
+          <TradeCityExplorer />
+        </Suspense>
 
         <div className="space-y-4">
           <SearchFilterBar
