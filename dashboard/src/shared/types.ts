@@ -20,6 +20,11 @@ export interface Subcontractor {
   serviceAreas: string[];
   totalProjects: number | null;
   activeProjects: number | null;
+  procoreUsers: number | null;
+  joinedAt: string | null;
+  claimed: boolean | null;
+  latitude: number | null;
+  longitude: number | null;
   samUei: string | null;
   samStatus: string | null;
   federalAwardsTotal: number | null;

@@ -28,6 +28,13 @@ def scrape():
     logger.info("Done!")
 
 
+def detail_scrape():
+    from .detail_scraper import enrich_all as detail_enrich
+    logger.info("Starting detail-page scraper")
+    detail_enrich()
+    logger.info("Detail-page scrape complete")
+
+
 def enrich():
     from .enrichment.sam_gov import enrich_all as enrich_sam
     from .enrichment.usaspending import enrich_all as enrich_awards
@@ -52,13 +59,16 @@ def main():
 
     if command == "scrape":
         scrape()
+    elif command == "detail":
+        detail_scrape()
     elif command == "enrich":
         enrich()
     elif command == "all":
         scrape()
+        detail_scrape()
         enrich()
     else:
-        print(f"Usage: python -m scraper.main [scrape|enrich|all]")
+        print(f"Usage: python -m scraper.main [scrape|detail|enrich|all]")
         sys.exit(1)
 
 

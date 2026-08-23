@@ -10,6 +10,9 @@ import {
   Users,
   Briefcase,
   FolderOpen,
+  Calendar,
+  ShieldCheck,
+  Activity,
 } from "lucide-react";
 import { useSubcontractor } from "@/hooks/use-subcontractors";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +20,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Suspense, lazy } from "react";
+
+const LocationMap = lazy(() =>
+  import("@/components/dashboard/location-map").then((m) => ({
+    default: m.LocationMap,
+  }))
+);
 
 function InfoRow({
   icon: Icon,
@@ -97,12 +107,15 @@ export function SubcontractorDetailPage() {
       ? `https://${sub.website}`
       : undefined;
 
+  const hasActivity =
+    sub.totalProjects != null || sub.activeProjects != null || sub.procoreUsers != null;
+
   const hasCompanyInfo =
-    sub.employeeCount || sub.avgContractSize ||
-    sub.totalProjects != null || sub.activeProjects != null;
+    sub.employeeCount || sub.avgContractSize;
 
   const hasEnrichment =
-    sub.samUei || sub.federalAwardsTotal != null || sub.govtContractsCount != null;
+    sub.samUei || (sub.federalAwardsTotal != null && sub.federalAwardsTotal > 0) ||
+    (sub.govtContractsCount != null && sub.govtContractsCount > 0);
 
   const hasContact = address || sub.phone || sub.email || sub.website;
 
@@ -140,10 +153,24 @@ export function SubcontractorDetailPage() {
                 <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
                   {sub.name}
                 </h1>
-                {sub.companyType && (
-                  <Badge variant="secondary" className="mt-1.5">
-                    {sub.companyType}
-                  </Badge>
+                <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                  {sub.companyType && (
+                    <Badge variant="secondary">
+                      {sub.companyType}
+                    </Badge>
+                  )}
+                  {sub.claimed && (
+                    <Badge variant="outline" className="text-green-600 border-green-600/30 dark:text-green-400 dark:border-green-400/30">
+                      <ShieldCheck className="mr-1 h-3 w-3" />
+                      Claimed
+                    </Badge>
+                  )}
+                </div>
+                {sub.joinedAt && (
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    <Calendar className="mr-1 inline h-3 w-3" />
+                    Joined Procore in {new Date(sub.joinedAt).toLocaleDateString(undefined, { month: "long", year: "numeric" })}
+                  </p>
                 )}
                 {sub.description && (
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -219,23 +246,8 @@ export function SubcontractorDetailPage() {
                   <div className="flex items-center gap-2">
                     <Briefcase className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-xs text-muted-foreground">
-                        Avg. Contract Size
-                      </p>
+                      <p className="text-xs text-muted-foreground">Avg. Contract Size</p>
                       <p>{sub.avgContractSize}</p>
-                    </div>
-                  </div>
-                )}
-                {(sub.totalProjects != null || sub.activeProjects != null) && (
-                  <div className="flex items-center gap-2">
-                    <FolderOpen className="h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Projects</p>
-                      <p>
-                        {sub.activeProjects ?? 0} active
-                        {sub.totalProjects != null &&
-                          ` / ${sub.totalProjects} total`}
-                      </p>
                     </div>
                   </div>
                 )}
@@ -243,6 +255,65 @@ export function SubcontractorDetailPage() {
             </Card>
           )}
         </div>
+
+        {/* Location Map */}
+        {sub.latitude != null && sub.longitude != null && (
+          <Card className="mt-4 overflow-hidden sm:mt-6">
+            <CardHeader>
+              <CardTitle className="text-sm">Location</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Suspense
+                fallback={
+                  <div className="flex h-48 items-center justify-center bg-muted sm:h-56">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                }
+              >
+                <LocationMap
+                  lat={sub.latitude}
+                  lng={sub.longitude}
+                  name={sub.name}
+                  address={address}
+                />
+              </Suspense>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Procore Activity */}
+        {hasActivity && (
+          <Card className="mt-4 sm:mt-6">
+            <CardHeader>
+              <CardTitle className="text-sm">
+                <Activity className="mr-1.5 inline h-4 w-4" />
+                Procore Activity
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-6 text-sm">
+                {sub.totalProjects != null && (
+                  <div>
+                    <p className="text-2xl font-bold">{sub.totalProjects}</p>
+                    <p className="text-xs text-muted-foreground">Total Projects</p>
+                  </div>
+                )}
+                {sub.activeProjects != null && (
+                  <div>
+                    <p className="text-2xl font-bold">{sub.activeProjects}</p>
+                    <p className="text-xs text-muted-foreground">Active Projects</p>
+                  </div>
+                )}
+                {sub.procoreUsers != null && (
+                  <div>
+                    <p className="text-2xl font-bold">{sub.procoreUsers}</p>
+                    <p className="text-xs text-muted-foreground">Procore Users</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Trades */}
         {(sub.trades ?? []).length > 0 && (

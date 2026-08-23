@@ -8,6 +8,7 @@ import {
   jsonb,
   index,
   boolean,
+  doublePrecision,
 } from "drizzle-orm/pg-core";
 
 export const subcontractors = pgTable(
@@ -41,6 +42,12 @@ export const subcontractors = pgTable(
 
     totalProjects: integer("total_projects"),
     activeProjects: integer("active_projects"),
+    procoreUsers: integer("procore_users"),
+    joinedAt: timestamp("joined_at"),
+    claimed: boolean("claimed"),
+
+    latitude: doublePrecision("latitude"),
+    longitude: doublePrecision("longitude"),
 
     samUei: varchar("sam_uei", { length: 20 }),
     samStatus: varchar("sam_status", { length: 50 }),
