@@ -420,7 +420,15 @@ export function SubcontractorDetailPage() {
                 {sub.samUei && (
                   <div>
                     <p className="text-xs text-muted-foreground">SAM.gov UEI</p>
-                    <p className="font-mono">{sub.samUei}</p>
+                    <a
+                      href={`https://sam.gov/search/?index=ent&page=1&pageSize=25&sort=-modifiedDate&sfm%5BsimpleSearch%5D%5BkeywordRadio%5D=ALL&sfm%5BsimpleSearch%5D%5BkeywordTags%5D%5B0%5D%5Bkey%5D=${sub.samUei}&sfm%5BsimpleSearch%5D%5BkeywordTags%5D%5B0%5D%5Bvalue%5D=${sub.samUei}&sfm%5Bstatus%5D%5Bis_active%5D=true`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-primary hover:underline"
+                    >
+                      {sub.samUei}
+                      <ExternalLink className="ml-1 inline h-3 w-3" />
+                    </a>
                     {sub.samStatus && (
                       <p className="mt-0.5 text-xs text-muted-foreground">
                         Status: {sub.samStatus}
@@ -453,7 +461,7 @@ export function SubcontractorDetailPage() {
                   <div>
                     <p className="text-xs text-muted-foreground">SF Vendor Payments</p>
                     <a
-                      href={`https://data.sfgov.org/City-Management-and-Ethics/Vendor-Payments-Vouchers-/n9pm-xkyq/explore/query/SELECT%20*%20WHERE%20upper(vendor)%20LIKE%20'%25${encodeURIComponent(sub.name.split(/\s+/).slice(0, 3).join(" ").toUpperCase())}%25'`}
+                      href={`https://data.sfgov.org/City-Management-and-Ethics/Vendor-Payments-Vouchers-/n9pm-xkyq/explore/query/SELECT%20vendor,%20fiscal_year,%20vouchers_paid,%20vouchers_pending,%20department%20WHERE%20upper(vendor)%20LIKE%20'%25${encodeURIComponent(sub.name.split(/\s+/).slice(0, 3).join(" ").toUpperCase())}%25'%20ORDER%20BY%20fiscal_year%20DESC`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary hover:underline"

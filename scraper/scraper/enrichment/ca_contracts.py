@@ -17,7 +17,7 @@ from ..db import get_connection
 
 logger = logging.getLogger(__name__)
 
-SF_CONTRACTS_API = "https://data.sfgov.org/resource/p5r5-fd7g.json"
+SF_CONTRACTS_API = "https://data.sfgov.org/resource/n9pm-xkyq.json"
 
 
 def search_contracts(company_name: str) -> int:
