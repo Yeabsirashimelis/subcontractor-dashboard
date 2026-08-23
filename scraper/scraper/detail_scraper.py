@@ -94,55 +94,21 @@ def enrich_all():
         updated = 0
 
         for sub_id, slug in rows:
-            company = fetch_detail_page(slug)
-            if not company:
+            page_props = fetch_detail_page(slug)
+            if not page_props:
                 time.sleep(REQUEST_DELAY)
                 continue
 
-            fields = extract_detail_fields(company)
+            fields = extract_detail_fields(page_props)
+            updates = {k: v for k, v in fields.items() if v is not None}
 
-            set_clauses = []
-            params = []
-
-            if fields["phone"]:
-                set_clauses.append("phone = %s")
-                params.append(fields["phone"])
-
-            if fields["claimed"] is not None:
-                set_clauses.append("claimed = %s")
-                params.append(fields["claimed"])
-
-            if fields["joined_at"]:
-                set_clauses.append("joined_at = %s")
-                params.append(fields["joined_at"])
-
-            if fields["total_projects"] is not None:
-                set_clauses.append("total_projects = %s")
-                params.append(fields["total_projects"])
-
-            if fields["active_projects"] is not None:
-                set_clauses.append("active_projects = %s")
-                params.append(fields["active_projects"])
-
-            if fields["procore_users"] is not None:
-                set_clauses.append("procore_users = %s")
-                params.append(fields["procore_users"])
-
-            if fields["latitude"] is not None:
-                set_clauses.append("latitude = %s")
-                params.append(fields["latitude"])
-
-            if fields["longitude"] is not None:
-                set_clauses.append("longitude = %s")
-                params.append(fields["longitude"])
-
-            if set_clauses:
-                set_clauses.append("updated_at = NOW()")
-                params.append(sub_id)
+            if updates:
+                set_sql = ", ".join(f"{k} = %s" for k in updates) + ", updated_at = NOW()"
+                params = list(updates.values()) + [sub_id]
 
                 with conn.cursor() as cur:
                     cur.execute(
-                        f"UPDATE subcontractors SET {', '.join(set_clauses)} WHERE id = %s",
+                        f"UPDATE subcontractors SET {set_sql} WHERE id = %s",
                         params,
                     )
                 conn.commit()

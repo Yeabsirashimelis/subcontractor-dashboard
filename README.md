@@ -1,160 +1,114 @@
-# Subcontractor Dashboard
+# Subcontractor Directory Dashboard
 
-A full-stack application that scrapes subcontractor data from [Procore's public network directory](https://network.procore.com/us), stores it in PostgreSQL, and presents it through a searchable, filterable dashboard. Includes enrichment from SAM.gov, USAspending, and NYC Open Data APIs.
+A full-stack tool that scrapes subcontractor data from [Procore's public network directory](https://network.procore.com/us/ca), enriches it with government contract data, and serves it through a searchable dashboard.
 
-## Architecture
+**Live:** [subcontractor-dashboard.onrender.com](https://subcontractor-dashboard.onrender.com) (free tier — first load may take ~30s to wake)
 
-```
-subcontractor-dashboard/
-├── scraper/          # Python scraper + enrichment scripts
-│   └── scraper/
-│       ├── procore.py            # Procore directory scraper
-│       ├── enrichment/
-│       │   ├── sam_gov.py        # SAM.gov UEI lookup
-│       │   ├── usaspending.py    # Federal awards lookup
-│       │   └── nyc_bids.py       # NYC bid records lookup
-│       ├── db.py                 # Postgres upsert logic
-│       ├── models.py             # Pydantic data models
-│       └── main.py               # CLI entry point
-├── dashboard/        # Hono + React TypeScript app
-│   └── src/
-│       ├── server/               # Hono API server
-│       │   ├── routes/           # REST endpoints
-│       │   ├── middleware/       # Auth middleware
-│       │   ├── db/               # Drizzle schema + client
-│       │   └── lib/              # better-auth config
-│       ├── client/               # React SPA
-│       │   ├── pages/            # Dashboard, detail, auth pages
-│       │   ├── components/       # Stats, charts, table, filters
-│       │   └── hooks/            # React Query data hooks
-│       └── shared/               # Shared TypeScript types
-└── docker-compose.yml
-```
+## What It Does
 
-**Key decisions:**
-- Two standalone apps (Python scraper + TypeScript dashboard) sharing only the database
-- Procore uses Next.js SSR with `__NEXT_DATA__` JSON — structured extraction, no HTML parsing
-- Server-side search/filter with Postgres ILIKE and JSONB containment queries
-- Debounced search (300ms) with `keepPreviousData` for smooth pagination transitions
+- Scrapes **221 California subcontractors** from Procore — name, contact, trades, company info, Procore activity, and GPS coordinates
+- Enriches records from **3 public government APIs**: SAM.gov (entity registration), USAspending (federal awards), SF Open Data (CA govt contracts)
+- Dashboard with **search, filter by trade/city/type**, stats cards, trade & city charts
+- **Company detail pages** with contact info, Leaflet map, Procore Activity stats, trades, market sectors, business classifications, and government data
+- Dark/light/system theme, mobile-responsive, route-level code splitting
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Database | PostgreSQL 16 (Docker) |
-| ORM | Drizzle ORM |
+| Layer | Tech |
+|-------|------|
+| Frontend | React 19, React Router v7, React Query v5, Recharts, react-leaflet |
+| UI | shadcn/ui, Tailwind CSS v4 |
 | API | Hono |
 | Auth | better-auth (email/password) |
-| Frontend | React 19, React Router, TanStack React Query |
-| Charts | Recharts |
-| Styling | Tailwind CSS v4 |
-| Scraper | Python 3, requests, pydantic |
-
-## Prerequisites
-
-- Node.js 22+ (use `nvm install 22`)
-- Python 3.10+
-- Docker & Docker Compose
+| Database | PostgreSQL 16, Drizzle ORM |
+| Scraper | Python 3, requests, pydantic, tenacity |
+| Deployment | Render (Docker + managed Postgres) |
 
 ## Quick Start
 
-### 1. Start the database
-
 ```bash
+# 1. Start Postgres
 docker compose up -d
-```
 
-This starts PostgreSQL on port **5433** (mapped from 5432 to avoid conflicts with a host Postgres).
-
-### 2. Set up the dashboard
-
-```bash
+# 2. Dashboard
 cd dashboard
-cp ../.env.example .env
 npm install --legacy-peer-deps
-```
-
-Push the schema to the database:
-
-```bash
 npm run db:push
-```
+npm run dev                # API :3000, Vite :5173
 
-Start the dev servers (API on :3000, Vite on :5173):
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173), create an account, and you'll see an empty dashboard.
-
-### 3. Run the scraper
-
-In a separate terminal:
-
-```bash
+# 3. Scraper (separate terminal) — full pipeline
 cd scraper
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python -m scraper.main scrape
-```
-
-This scrapes ~296 subcontractors from Procore's NY directory and upserts them into Postgres. Refresh the dashboard to see the data.
-
-### 4. Run enrichment (optional)
-
-```bash
-python -m scraper.main enrich
-```
-
-This runs three enrichment passes sequentially:
-1. **SAM.gov** — looks up each company's Unique Entity Identifier (UEI) and registration status
-2. **USAspending** — aggregates federal contract award totals
-3. **NYC Open Data** — counts bid records from the NYC Current Bids dataset
-
-Each pass is rate-limited (2s between requests) and idempotent — only processes records that haven't been enriched yet.
-
-To scrape and enrich in one command:
-
-```bash
 python -m scraper.main all
 ```
 
-## API Endpoints
+Requires Node.js 22+ and Python 3.10+.
 
-All endpoints require authentication (session cookie).
+## Scraper CLI
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/subcontractors` | Paginated list with search/filter/sort |
-| GET | `/api/subcontractors/:id` | Single subcontractor detail |
-| GET | `/api/stats/overview` | KPI counts (total, cities, trades, types) |
-| GET | `/api/stats/trades` | Top 15 trades by count |
-| GET | `/api/stats/cities` | Top 10 cities by count |
-| GET | `/api/stats/company-types` | Company types by count |
-| GET | `/api/filters/options` | Distinct values for filter dropdowns |
-| POST | `/api/auth/sign-up/email` | Register |
-| POST | `/api/auth/sign-in/email` | Login |
+The scraper is self-contained — one command runs the full pipeline, and it can target any Postgres database.
 
-### Query parameters for `/api/subcontractors`
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `page` | number | Page number (default: 1) |
-| `limit` | number | Items per page (default: 20, max: 100) |
-| `search` | string | Search name, city, or description (ILIKE) |
-| `trade` | string | Filter by trade (JSONB containment) |
-| `city` | string | Filter by city (exact match) |
-| `companyType` | string | Filter by company type |
-| `sortBy` | string | Sort column (default: name) |
-| `sortOrder` | string | asc or desc |
-
-## Production Build
-
-```bash
-cd dashboard
-npm run build
-npm start
+```
+python -m scraper.main {scrape,detail,enrich,all,seed} [--db URL] [--target-db URL] [--state STATE]
 ```
 
-The build bundles the React client with Vite and the Hono server with tsup. The server serves the static client files and the API from a single process on port 3000.
+| Command | What it does |
+|---------|-------------|
+| `all` | Full pipeline: scrape listings → fetch detail pages → enrich with govt data |
+| `scrape` | Pull listing pages from Procore |
+| `detail` | Fetch detail pages for phone, lat/lng, Procore activity, claimed status |
+| `enrich` | Query SAM.gov, USAspending, and SF Open Data APIs |
+| `seed` | Copy data from local DB to a remote DB (`--target-db` required) |
+
+```bash
+# Scrape California into local DB
+python -m scraper.main all
+
+# Scrape Texas into a remote DB
+python -m scraper.main all --state tx --db "postgresql://user:pass@host/db"
+
+# Seed local data to production
+python -m scraper.main seed --target-db "postgresql://user:pass@host/db"
+```
+
+### How the scraper works
+
+1. **Listing pages** — Extracts `__NEXT_DATA__` JSON from Procore's Next.js SSR pages (no HTML parsing)
+2. **Detail pages** — Visits each company's page for extra fields: phone, GPS coordinates, project counts, join date, claimed status
+3. **Enrichment** — Queries SAM.gov for entity IDs, USAspending for federal award totals, and SF Open Data for government contract counts
+
+All passes are rate-limited, retry on failure with exponential backoff, and are idempotent.
+
+## Project Structure
+
+```
+scraper/                    # Python scraper + enrichment
+  scraper/
+    main.py                 # CLI (argparse)
+    procore.py              # Procore listing scraper
+    detail_scraper.py       # Procore detail page scraper
+    enrichment/
+      sam_gov.py            # SAM.gov entity lookup
+      usaspending.py        # Federal awards lookup
+      ca_contracts.py       # SF Open Data contracts
+    db.py                   # Postgres upsert logic
+    models.py               # Pydantic models
+    config.py               # Config + runtime overrides
+
+dashboard/                  # Hono + React monorepo
+  src/
+    server/                 # Hono API + Drizzle + better-auth
+    client/                 # React SPA (pages, components, hooks)
+    shared/                 # TypeScript types
+```
+
+## Deployment
+
+Push to `main` triggers auto-deploy on Render via `render.yaml` blueprint. The Dockerfile runs `drizzle-kit push --force` on startup to sync the schema.
+
+```bash
+git push origin main
+# Then seed production:
+python -m scraper.main seed --target-db "$REMOTE_DATABASE_URL"
+```

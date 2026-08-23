@@ -1,6 +1,5 @@
 import json
 import logging
-from urllib.parse import urlparse
 
 import psycopg2
 from psycopg2.extras import execute_values
