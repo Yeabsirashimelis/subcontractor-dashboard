@@ -52,6 +52,7 @@ export const subcontractors = pgTable(
     samUei: varchar("sam_uei", { length: 20 }),
     samStatus: varchar("sam_status", { length: 50 }),
     federalAwardsTotal: integer("federal_awards_total"),
+    usaspendingRecipientId: varchar("usaspending_recipient_id", { length: 100 }),
     govtContractsCount: integer("govt_contracts_count"),
 
     sourceUrl: varchar("source_url", { length: 500 }),

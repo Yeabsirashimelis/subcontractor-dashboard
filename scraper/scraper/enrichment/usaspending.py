@@ -27,7 +27,7 @@ def search_awards(company_name: str) -> dict | None:
             "award_type_codes": ["A", "B", "C", "D"],
             "time_period": [{"start_date": "2019-01-01", "end_date": "2026-12-31"}],
         },
-        "fields": ["Award Amount", "Recipient Name", "Award ID"],
+        "fields": ["Award Amount", "Recipient Name", "Award ID", "recipient_id"],
         "page": 1,
         "limit": 10,
         "sort": "Award Amount",
@@ -52,9 +52,12 @@ def search_awards(company_name: str) -> dict | None:
             for r in results
         )
 
+        recipient_id = results[0].get("recipient_id")
+
         return {
             "total_awards": int(total),
             "award_count": len(results),
+            "recipient_id": recipient_id,
         }
     except requests.RequestException as e:
         logger.error(f"USAspending request failed for '{company_name}': {e}")
@@ -82,9 +85,10 @@ def enrich_all():
                     cur.execute(
                         """UPDATE subcontractors
                            SET federal_awards_total = %s,
+                               usaspending_recipient_id = %s,
                                enriched_at = NOW(), updated_at = NOW()
                            WHERE id = %s""",
-                        (result["total_awards"], sub_id),
+                        (result["total_awards"], result.get("recipient_id"), sub_id),
                     )
                 conn.commit()
                 enriched += 1

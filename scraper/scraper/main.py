@@ -23,8 +23,8 @@ SEED_COLUMNS = [
     "employee_count", "avg_contract_size", "logo_url", "trades",
     "market_sectors", "business_classifications", "service_areas",
     "total_projects", "active_projects", "sam_uei", "sam_status",
-    "federal_awards_total", "govt_contracts_count", "source_url",
-    "scraped_at", "enriched_at", "created_at", "updated_at",
+    "federal_awards_total", "usaspending_recipient_id", "govt_contracts_count",
+    "source_url", "scraped_at", "enriched_at", "created_at", "updated_at",
     "procore_users", "joined_at", "claimed", "latitude", "longitude",
 ]
 

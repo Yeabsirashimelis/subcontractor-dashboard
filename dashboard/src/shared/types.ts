@@ -28,6 +28,7 @@ export interface Subcontractor {
   samUei: string | null;
   samStatus: string | null;
   federalAwardsTotal: number | null;
+  usaspendingRecipientId: string | null;
   govtContractsCount: number | null;
   sourceUrl: string | null;
   scrapedAt: string | null;
